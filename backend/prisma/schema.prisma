@@ -31,6 +31,7 @@ model Application {
   resumeVersion   ResumeVersion?   @relation(fields: [resumeVersionId], references: [id], onDelete: SetNull)
   notes          String?           @db.Text
   interviewNotes InterviewNote[]
+  companyResearch CompanyResearch?
   createdAt      DateTime          @default(now())
   updatedAt      DateTime          @updatedAt
 
@@ -67,4 +68,23 @@ model ResumeVersion {
   applications Application[]
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
+}
+
+model CompanyResearch {
+  id             Int         @id @default(autoincrement())
+  applicationId  Int         @unique
+  application    Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  companyWebsite String?
+  companySize    String?
+  industry       String?
+  location       String?
+  mission        String?     @db.Text
+  products       String?     @db.Text
+  techStack      String?     @db.Text
+  cultureNotes   String?     @db.Text
+  interviewTips  String?     @db.Text
+  redFlags       String?     @db.Text
+  whyInterested  String?     @db.Text
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
 }

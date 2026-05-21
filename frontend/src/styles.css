@@ -137,6 +137,8 @@ a:hover {
 .follow-up-panel,
 .interview-note-card,
 .interview-note-form,
+.company-research-card,
+.company-research-form,
 .resume-version-card,
 .resume-version-form,
 .detail-grid > div,
@@ -403,6 +405,8 @@ tr:last-child td {
 
 .interview-note-form input,
 .interview-note-form textarea,
+.company-research-form input,
+.company-research-form textarea,
 .resume-version-form input,
 .resume-version-form textarea {
   border: 1px solid #cfd4dc;
@@ -464,6 +468,44 @@ tr:last-child td {
 }
 
 .resume-version-form span {
+  color: #be123c;
+  font-size: 0.85rem;
+}
+
+.company-research-section {
+  margin-top: 24px;
+}
+
+.company-research-card,
+.company-research-form {
+  padding: 18px;
+}
+
+.company-research-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0 0 16px;
+}
+
+.company-research-form {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.company-research-form .wide {
+  grid-column: 1 / -1;
+}
+
+.company-research-form label {
+  color: #344054;
+  display: grid;
+  font-weight: 700;
+  gap: 8px;
+}
+
+.company-research-form span {
   color: #be123c;
   font-size: 0.85rem;
 }
@@ -554,6 +596,8 @@ dd {
 
   .follow-up-item,
   .follow-up-summary,
+  .company-research-grid,
+  .company-research-form,
   .interview-note-details,
   .interview-note-form,
   .resume-version-card,

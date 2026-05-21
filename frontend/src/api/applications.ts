@@ -1,4 +1,13 @@
-import type { Application, ApplicationInput, InterviewNote, InterviewNoteInput, ResumeVersion, ResumeVersionInput } from "../types";
+import type {
+  Application,
+  ApplicationInput,
+  CompanyResearch,
+  CompanyResearchInput,
+  InterviewNote,
+  InterviewNoteInput,
+  ResumeVersion,
+  ResumeVersionInput
+} from "../types";
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000";
 
@@ -99,6 +108,30 @@ export function updateResumeVersion(id: string, input: Partial<ResumeVersionInpu
 
 export function deleteResumeVersion(id: string) {
   return request<void>(`/api/resume-versions/${id}`, {
+    method: "DELETE"
+  });
+}
+
+export function getCompanyResearch(applicationId: string) {
+  return request<CompanyResearch | null>(`/api/applications/${applicationId}/company-research`);
+}
+
+export function createCompanyResearch(applicationId: string, input: CompanyResearchInput) {
+  return request<CompanyResearch>(`/api/applications/${applicationId}/company-research`, {
+    method: "POST",
+    body: JSON.stringify(input)
+  });
+}
+
+export function updateCompanyResearch(id: string, input: Partial<CompanyResearchInput>) {
+  return request<CompanyResearch>(`/api/company-research/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(input)
+  });
+}
+
+export function deleteCompanyResearch(id: string) {
+  return request<void>(`/api/company-research/${id}`, {
     method: "DELETE"
   });
 }

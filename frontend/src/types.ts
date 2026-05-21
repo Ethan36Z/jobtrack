@@ -55,6 +55,38 @@ export type ResumeVersionInput = {
   notes?: string;
 };
 
+export type CompanyResearch = {
+  id: number;
+  applicationId: number;
+  companyWebsite: string | null;
+  companySize: string | null;
+  industry: string | null;
+  location: string | null;
+  mission: string | null;
+  products: string | null;
+  techStack: string | null;
+  cultureNotes: string | null;
+  interviewTips: string | null;
+  redFlags: string | null;
+  whyInterested: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type CompanyResearchInput = {
+  companyWebsite?: string;
+  companySize?: string;
+  industry?: string;
+  location?: string;
+  mission?: string;
+  products?: string;
+  techStack?: string;
+  cultureNotes?: string;
+  interviewTips?: string;
+  redFlags?: string;
+  whyInterested?: string;
+};
+
 export type InterviewNote = {
   id: number;
   applicationId: number;

@@ -4,15 +4,19 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
 import {
+  createCompanyResearch,
   createInterviewNote,
   deleteApplication,
+  deleteCompanyResearch,
   deleteInterviewNote,
   getApplication,
+  getCompanyResearch,
   getInterviewNotes,
+  updateCompanyResearch,
   updateInterviewNote
 } from "../api/applications";
 import { useApplicationStore } from "../store/applicationStore";
-import type { Application, InterviewNote, InterviewNoteInput } from "../types";
+import type { Application, CompanyResearch, CompanyResearchInput, InterviewNote, InterviewNoteInput } from "../types";
 import { getFollowUpLabel, getFollowUpStatus, parseApiDateAsLocalDay } from "../utils/followUp";
 
 function display(value: string | null) {
@@ -53,6 +57,36 @@ const emptyInterviewNoteValues: InterviewNoteFormValues = {
   questions: "",
   nextSteps: "",
   result: ""
+};
+
+const companyResearchSchema = z.object({
+  companyWebsite: z.string().url("Enter a valid URL").optional().or(z.literal("")),
+  companySize: z.string().optional(),
+  industry: z.string().optional(),
+  location: z.string().optional(),
+  mission: z.string().optional(),
+  products: z.string().optional(),
+  techStack: z.string().optional(),
+  cultureNotes: z.string().optional(),
+  interviewTips: z.string().optional(),
+  redFlags: z.string().optional(),
+  whyInterested: z.string().optional()
+});
+
+type CompanyResearchFormValues = z.infer<typeof companyResearchSchema>;
+
+const emptyCompanyResearchValues: CompanyResearchFormValues = {
+  companyWebsite: "",
+  companySize: "",
+  industry: "",
+  location: "",
+  mission: "",
+  products: "",
+  techStack: "",
+  cultureNotes: "",
+  interviewTips: "",
+  redFlags: "",
+  whyInterested: ""
 };
 
 export function ApplicationDetailPage() {
@@ -225,9 +259,275 @@ export function ApplicationDetailPage() {
         <p>{display(application.notes)}</p>
       </section>
 
+      <CompanyResearchSection applicationId={application.id} />
+
       <InterviewNotesSection applicationId={application.id} />
     </section>
   );
+}
+
+function CompanyResearchSection({ applicationId }: { applicationId: number }) {
+  const [companyResearch, setCompanyResearch] = useState<CompanyResearch | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting }
+  } = useForm<CompanyResearchFormValues>({
+    resolver: zodResolver(companyResearchSchema),
+    defaultValues: emptyCompanyResearchValues
+  });
+
+  useEffect(() => {
+    setIsLoading(true);
+    getCompanyResearch(String(applicationId))
+      .then((research) => {
+        setCompanyResearch(research);
+        setLoadError(null);
+      })
+      .catch((err: Error) => setLoadError(err.message))
+      .finally(() => setIsLoading(false));
+  }, [applicationId]);
+
+  function startEditing() {
+    setIsEditing(true);
+    setSaveError(null);
+    reset(companyResearch ? toCompanyResearchFormValues(companyResearch) : emptyCompanyResearchValues);
+  }
+
+  function cancelEditing() {
+    setIsEditing(false);
+    setSaveError(null);
+    reset(companyResearch ? toCompanyResearchFormValues(companyResearch) : emptyCompanyResearchValues);
+  }
+
+  async function onSubmit(values: CompanyResearchFormValues) {
+    const payload: CompanyResearchInput = values;
+
+    try {
+      setSaveError(null);
+
+      if (companyResearch) {
+        const updated = await updateCompanyResearch(String(companyResearch.id), payload);
+        setCompanyResearch(updated);
+        setIsEditing(false);
+        reset(toCompanyResearchFormValues(updated));
+        return;
+      }
+
+      const created = await createCompanyResearch(String(applicationId), payload);
+      setCompanyResearch(created);
+      setIsEditing(false);
+      reset(toCompanyResearchFormValues(created));
+    } catch (err) {
+      setSaveError(err instanceof Error ? err.message : "Save failed");
+    }
+  }
+
+  async function handleDelete() {
+    if (!companyResearch) {
+      return;
+    }
+
+    const confirmed = window.confirm("Delete this company research? This cannot be undone.");
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      setDeleteError(null);
+      await deleteCompanyResearch(String(companyResearch.id));
+      setCompanyResearch(null);
+      setIsEditing(false);
+      reset(emptyCompanyResearchValues);
+    } catch (err) {
+      setDeleteError(err instanceof Error ? err.message : "Delete failed");
+    }
+  }
+
+  return (
+    <section className="company-research-section">
+      <div className="section-header">
+        <div>
+          <p className="eyebrow">Company Context</p>
+          <h3>Company Research</h3>
+        </div>
+        {!isLoading && !loadError && !isEditing && (
+          <button className="button secondary" type="button" onClick={startEditing}>
+            {companyResearch ? "Edit" : "Add research"}
+          </button>
+        )}
+      </div>
+
+      {isLoading && <p className="muted">Loading company research...</p>}
+      {loadError && <p className="error">Could not load company research: {loadError}</p>}
+      {saveError && <p className="error">Could not save company research: {saveError}</p>}
+      {deleteError && <p className="error">Could not delete company research: {deleteError}</p>}
+
+      {!isLoading && !loadError && !companyResearch && !isEditing && (
+        <div className="empty-state">
+          <h3>No company research yet</h3>
+          <p>Add useful company context for interview prep and application decisions.</p>
+        </div>
+      )}
+
+      {!isLoading && !loadError && companyResearch && !isEditing && (
+        <article className="company-research-card">
+          <dl className="company-research-grid">
+            <div>
+              <dt>Website</dt>
+              <dd>
+                {companyResearch.companyWebsite ? (
+                  <a href={companyResearch.companyWebsite}>{companyResearch.companyWebsite}</a>
+                ) : (
+                  "Not set"
+                )}
+              </dd>
+            </div>
+            <div>
+              <dt>Company size</dt>
+              <dd>{display(companyResearch.companySize)}</dd>
+            </div>
+            <div>
+              <dt>Industry</dt>
+              <dd>{display(companyResearch.industry)}</dd>
+            </div>
+            <div>
+              <dt>Location</dt>
+              <dd>{display(companyResearch.location)}</dd>
+            </div>
+            <div>
+              <dt>Mission</dt>
+              <dd>{display(companyResearch.mission)}</dd>
+            </div>
+            <div>
+              <dt>Products</dt>
+              <dd>{display(companyResearch.products)}</dd>
+            </div>
+            <div>
+              <dt>Tech stack</dt>
+              <dd>{display(companyResearch.techStack)}</dd>
+            </div>
+            <div>
+              <dt>Culture notes</dt>
+              <dd>{display(companyResearch.cultureNotes)}</dd>
+            </div>
+            <div>
+              <dt>Interview tips</dt>
+              <dd>{display(companyResearch.interviewTips)}</dd>
+            </div>
+            <div>
+              <dt>Red flags</dt>
+              <dd>{display(companyResearch.redFlags)}</dd>
+            </div>
+            <div>
+              <dt>Why interested</dt>
+              <dd>{display(companyResearch.whyInterested)}</dd>
+            </div>
+          </dl>
+          <div className="form-actions">
+            <button className="button secondary small" type="button" onClick={startEditing}>
+              Edit
+            </button>
+            <button className="button danger small" type="button" onClick={handleDelete}>
+              Delete
+            </button>
+          </div>
+        </article>
+      )}
+
+      {!isLoading && !loadError && isEditing && (
+        <form className="company-research-form" onSubmit={handleSubmit(onSubmit)}>
+          <label>
+            Company website
+            <input placeholder="https://..." {...register("companyWebsite")} />
+            {errors.companyWebsite && <span>{errors.companyWebsite.message}</span>}
+          </label>
+
+          <label>
+            Company size
+            <input {...register("companySize")} />
+          </label>
+
+          <label>
+            Industry
+            <input {...register("industry")} />
+          </label>
+
+          <label>
+            Location
+            <input {...register("location")} />
+          </label>
+
+          <label className="wide">
+            Mission
+            <textarea rows={3} {...register("mission")} />
+          </label>
+
+          <label className="wide">
+            Products
+            <textarea rows={3} {...register("products")} />
+          </label>
+
+          <label className="wide">
+            Tech stack
+            <textarea rows={3} {...register("techStack")} />
+          </label>
+
+          <label className="wide">
+            Culture notes
+            <textarea rows={3} {...register("cultureNotes")} />
+          </label>
+
+          <label className="wide">
+            Interview tips
+            <textarea rows={3} {...register("interviewTips")} />
+          </label>
+
+          <label className="wide">
+            Red flags
+            <textarea rows={3} {...register("redFlags")} />
+          </label>
+
+          <label className="wide">
+            Why interested
+            <textarea rows={3} {...register("whyInterested")} />
+          </label>
+
+          <div className="form-actions wide">
+            <button className="button" type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Saving..." : companyResearch ? "Save research" : "Add research"}
+            </button>
+            <button className="button secondary" type="button" onClick={cancelEditing}>
+              Cancel
+            </button>
+          </div>
+        </form>
+      )}
+    </section>
+  );
+}
+
+function toCompanyResearchFormValues(research: CompanyResearch): CompanyResearchFormValues {
+  return {
+    companyWebsite: research.companyWebsite || "",
+    companySize: research.companySize || "",
+    industry: research.industry || "",
+    location: research.location || "",
+    mission: research.mission || "",
+    products: research.products || "",
+    techStack: research.techStack || "",
+    cultureNotes: research.cultureNotes || "",
+    interviewTips: research.interviewTips || "",
+    redFlags: research.redFlags || "",
+    whyInterested: research.whyInterested || ""
+  };
 }
 
 function InterviewNotesSection({ applicationId }: { applicationId: number }) {

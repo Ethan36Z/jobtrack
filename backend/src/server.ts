@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import express from "express";
 import { ZodError } from "zod";
 import { applicationsRouter } from "./routes/applications.js";
+import { companyResearchRouter } from "./routes/companyResearch.js";
 import { interviewNotesRouter } from "./routes/interviewNotes.js";
 import { resumeVersionsRouter } from "./routes/resumeVersions.js";
 
@@ -24,6 +25,7 @@ app.get("/api/health", (_req, res) => {
 });
 
 app.use("/api/applications", applicationsRouter);
+app.use("/api/company-research", companyResearchRouter);
 app.use("/api/interview-notes", interviewNotesRouter);
 app.use("/api/resume-versions", resumeVersionsRouter);
 
