@@ -1,8 +1,8 @@
 # JobTrack
 
-JobTrack is a single-user full-stack job application tracker for managing job applications, statuses, next actions, follow-up dates, interview notes, resume versions, and company research notes.
+JobTrack is a single-user full-stack job application tracker for managing applications, follow-ups, interview notes, resume versions, and company research notes. It is built as a portfolio-ready project with a real React frontend, Express API, Prisma data model, and MySQL database.
 
-This project intentionally does not include authentication, admin features, deployment, Docker, or multi-user support.
+This project intentionally does not include authentication, admin features, deployment, Docker, scraping, browser extensions, email/calendar sync, or AI features.
 
 ## Tech Stack
 
@@ -10,40 +10,42 @@ This project intentionally does not include authentication, admin features, depl
 - Backend: Node.js, Express, TypeScript, Prisma
 - Database: MySQL
 
+## Features
+
+- Application CRUD with detail, edit, and delete flows
+- Search by company name or job title
+- Status filtering and dashboard stats
+- Follow-up workflow with next actions, follow-up dates, and dashboard follow-up cards
+- Interview notes attached to applications
+- Resume versions CRUD and optional application-to-resume-version linking
+- Company research notes attached to applications
+- Loading, error, and empty states for core workflows
+- Local demo seed data for portfolio walkthroughs
+
 ## Project Structure
 
 ```txt
 jobtrack/
-  frontend/
   backend/
+    prisma/
+    src/
+  frontend/
+    src/
   README.md
 ```
 
-## Create the MySQL Database
+## Environment Files
 
-Make sure your local MySQL server is running, then create the database:
+Create local `.env` files from the examples. Do not commit real `.env` files.
 
-```sql
-CREATE DATABASE jobtrack;
-```
-
-You can run that from a MySQL shell:
-
-```bash
-mysql -u USER -p
-```
-
-Then enter the SQL command above.
-
-## Backend Setup
+Backend:
 
 ```bash
 cd backend
-npm install
 copy .env.example .env
 ```
 
-Update `backend/.env` with your local MySQL credentials:
+Example backend values:
 
 ```env
 DATABASE_URL="mysql://USER:PASSWORD@localhost:3306/jobtrack"
@@ -51,17 +53,53 @@ PORT=4000
 FRONTEND_ORIGIN="http://localhost:5173"
 ```
 
-Generate the Prisma client:
+Frontend:
 
 ```bash
-npm run prisma:generate
+cd frontend
+copy .env.example .env
 ```
 
-Run the initial migration:
+Example frontend value:
+
+```env
+VITE_API_BASE_URL=http://localhost:4000
+```
+
+On macOS/Linux, use `cp` instead of `copy`.
+
+## Database Setup
+
+Make sure MySQL is running, then create the local database:
+
+```sql
+CREATE DATABASE jobtrack;
+```
+
+From a MySQL shell:
 
 ```bash
+mysql -u USER -p
+```
+
+Then run the SQL command above.
+
+## Backend Setup
+
+```bash
+cd backend
+npm install
+npm run prisma:generate
 npm run prisma:migrate
 ```
+
+Optional demo seed data:
+
+```bash
+npm run prisma:seed
+```
+
+The seed script creates or updates a known set of portfolio demo records. It does not wipe the whole database. For the seeded demo applications, it refreshes their related demo interview notes and company research records so the demo stays predictable.
 
 Start the backend:
 
@@ -73,7 +111,7 @@ The API runs at `http://localhost:4000`.
 
 Health check:
 
-```bash
+```txt
 GET http://localhost:4000/api/health
 ```
 
@@ -82,39 +120,52 @@ GET http://localhost:4000/api/health
 ```bash
 cd frontend
 npm install
-copy .env.example .env
-```
-
-The default API URL is:
-
-```env
-VITE_API_BASE_URL=http://localhost:4000
-```
-
-Start the frontend:
-
-```bash
 npm run dev
 ```
 
 The frontend runs at `http://localhost:5173`.
 
-## Useful Backend Scripts
+## Useful Scripts
+
+Backend:
 
 - `npm run dev`: start the Express API in watch mode
 - `npm run build`: compile TypeScript
 - `npm run start`: run the compiled server
 - `npm run prisma:generate`: generate Prisma client
 - `npm run prisma:migrate`: run Prisma migrations
+- `npm run prisma:seed`: seed local demo data
 - `npm run prisma:studio`: open Prisma Studio
 
-## Useful Frontend Scripts
+Frontend:
 
 - `npm run dev`: start Vite
 - `npm run build`: type-check and build production assets
 - `npm run preview`: preview the production build
 
-## V1 API Routes
+## Completed V1
+
+- Application model and REST API
+- Application create, read, update, and delete
+- Application detail page
+- Search by company or job title
+- Status filter
+- Dashboard stats backed by real API data
+- Basic loading, error, and empty states
+
+## Completed V2
+
+- Follow-up workflow with `nextAction` and `followUpDate`
+- Dashboard follow-up section with overdue, today, upcoming, and no-date labels
+- Interview notes per application
+- Resume versions CRUD
+- Optional application-to-resume-version relation
+- Company research notes per application
+- V2 integration polish for routing, layout, and README accuracy
+
+## API Overview
+
+Core:
 
 - `GET /api/health`
 - `GET /api/applications`
@@ -123,33 +174,33 @@ The frontend runs at `http://localhost:5173`.
 - `PUT /api/applications/:id`
 - `DELETE /api/applications/:id`
 
-## V2 API Routes
+Interview notes:
 
 - `GET /api/applications/:applicationId/interview-notes`
 - `POST /api/applications/:applicationId/interview-notes`
 - `PUT /api/interview-notes/:id`
 - `DELETE /api/interview-notes/:id`
+
+Resume versions:
+
 - `GET /api/resume-versions`
 - `GET /api/resume-versions/:id`
 - `POST /api/resume-versions`
 - `PUT /api/resume-versions/:id`
 - `DELETE /api/resume-versions/:id`
+
+Company research:
+
 - `GET /api/applications/:applicationId/company-research`
 - `POST /api/applications/:applicationId/company-research`
 - `PUT /api/company-research/:id`
 - `DELETE /api/company-research/:id`
 
-## V1 Scope
+## Future Improvements
 
-- Dashboard backed by real application data
-- Application list, detail, create, edit, and delete flows
-- Search by company or job title
-- Status filtering
-- Basic loading, error, and empty states
-
-## Future Ideas
-
-- Automated tests
+- Auth/login as an optional later milestone
+- Protected routes and user ownership
+- Deployment
+- Better automated tests
 - Calendar and email reminders
-- Browser extension workflows
-- AI-assisted research or drafting
+- AI-assisted resume and interview prep
