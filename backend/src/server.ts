@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import express from "express";
 import { ZodError } from "zod";
 import { applicationsRouter } from "./routes/applications.js";
+import { interviewNotesRouter } from "./routes/interviewNotes.js";
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ app.get("/api/health", (_req, res) => {
 });
 
 app.use("/api/applications", applicationsRouter);
+app.use("/api/interview-notes", interviewNotesRouter);
 
 app.use((error: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   if (error instanceof ZodError) {

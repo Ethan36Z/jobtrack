@@ -2,6 +2,7 @@ import { type NextFunction, type Request, type Response, Router } from "express"
 import { Prisma } from "@prisma/client";
 import { prisma } from "../lib/prisma.js";
 import { applicationSchema, applicationUpdateSchema } from "../validation/application.js";
+import { interviewNoteSchema } from "../validation/interviewNote.js";
 
 export const applicationsRouter = Router();
 
@@ -34,6 +35,65 @@ applicationsRouter.get("/:id", async (req, res, next) => {
     }
 
     res.json(application);
+  } catch (error) {
+    next(error);
+  }
+});
+
+applicationsRouter.get("/:applicationId/interview-notes", async (req, res, next) => {
+  try {
+    const applicationId = Number(req.params.applicationId);
+
+    if (!Number.isInteger(applicationId)) {
+      return res.status(400).json({ message: "Invalid application id" });
+    }
+
+    const application = await prisma.application.findUnique({
+      where: { id: applicationId },
+      select: { id: true }
+    });
+
+    if (!application) {
+      return res.status(404).json({ message: "Application not found" });
+    }
+
+    const interviewNotes = await prisma.interviewNote.findMany({
+      where: { applicationId },
+      orderBy: [{ interviewDate: "desc" }, { createdAt: "desc" }]
+    });
+
+    res.json(interviewNotes);
+  } catch (error) {
+    next(error);
+  }
+});
+
+applicationsRouter.post("/:applicationId/interview-notes", async (req, res, next) => {
+  try {
+    const applicationId = Number(req.params.applicationId);
+
+    if (!Number.isInteger(applicationId)) {
+      return res.status(400).json({ message: "Invalid application id" });
+    }
+
+    const application = await prisma.application.findUnique({
+      where: { id: applicationId },
+      select: { id: true }
+    });
+
+    if (!application) {
+      return res.status(404).json({ message: "Application not found" });
+    }
+
+    const data = interviewNoteSchema.parse(req.body);
+    const interviewNote = await prisma.interviewNote.create({
+      data: {
+        ...data,
+        applicationId
+      }
+    });
+
+    res.status(201).json(interviewNote);
   } catch (error) {
     next(error);
   }

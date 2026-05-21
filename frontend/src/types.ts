@@ -34,3 +34,29 @@ export type ApplicationInput = {
   followUpDate?: string;
   notes?: string;
 };
+
+export type InterviewNote = {
+  id: number;
+  applicationId: number;
+  roundName: string | null;
+  interviewDate: string | null;
+  interviewer: string | null;
+  format: string | null;
+  summary: string | null;
+  questions: string | null;
+  nextSteps: string | null;
+  result: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type InterviewNoteInput = {
+  roundName?: string;
+  interviewDate?: string;
+  interviewer?: string;
+  format?: string;
+  summary?: string;
+  questions?: string;
+  nextSteps?: string;
+  result?: string;
+};
