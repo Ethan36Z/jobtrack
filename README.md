@@ -1,8 +1,8 @@
 # JobTrack
 
-JobTrack is a single-user full-stack job application tracker for managing job applications, statuses, next actions, and follow-up dates.
+JobTrack is a single-user full-stack job application tracker for managing job applications, statuses, next actions, follow-up dates, interview notes, resume versions, and company research notes.
 
-This V1 milestone intentionally does not include authentication, admin features, deployment, Docker, or multi-user support.
+This project intentionally does not include authentication, admin features, deployment, Docker, or multi-user support.
 
 ## Tech Stack
 
@@ -123,6 +123,22 @@ The frontend runs at `http://localhost:5173`.
 - `PUT /api/applications/:id`
 - `DELETE /api/applications/:id`
 
+## V2 API Routes
+
+- `GET /api/applications/:applicationId/interview-notes`
+- `POST /api/applications/:applicationId/interview-notes`
+- `PUT /api/interview-notes/:id`
+- `DELETE /api/interview-notes/:id`
+- `GET /api/resume-versions`
+- `GET /api/resume-versions/:id`
+- `POST /api/resume-versions`
+- `PUT /api/resume-versions/:id`
+- `DELETE /api/resume-versions/:id`
+- `GET /api/applications/:applicationId/company-research`
+- `POST /api/applications/:applicationId/company-research`
+- `PUT /api/company-research/:id`
+- `DELETE /api/company-research/:id`
+
 ## V1 Scope
 
 - Dashboard backed by real application data
@@ -134,6 +150,6 @@ The frontend runs at `http://localhost:5173`.
 ## Future Ideas
 
 - Automated tests
-- Interview notes
-- Resume version tracking
-- Company research
+- Calendar and email reminders
+- Browser extension workflows
+- AI-assisted research or drafting

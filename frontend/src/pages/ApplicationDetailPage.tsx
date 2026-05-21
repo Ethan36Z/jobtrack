@@ -650,8 +650,8 @@ function InterviewNotesSection({ applicationId }: { applicationId: number }) {
                   <h4>{note.roundName || "Interview note"}</h4>
                   <p>
                     {formatDate(note.interviewDate)}
-                    {note.interviewer ? ` · ${note.interviewer}` : ""}
-                    {note.format ? ` · ${note.format}` : ""}
+                    {note.interviewer ? ` - ${note.interviewer}` : ""}
+                    {note.format ? ` - ${note.format}` : ""}
                   </p>
                 </div>
                 <div className="actions">
