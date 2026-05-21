@@ -44,3 +44,9 @@ export function updateApplication(id: string, input: Partial<ApplicationInput>) 
     body: JSON.stringify(input)
   });
 }
+
+export function deleteApplication(id: string) {
+  return request<void>(`/api/applications/${id}`, {
+    method: "DELETE"
+  });
+}

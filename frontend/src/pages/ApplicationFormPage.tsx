@@ -1,9 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
 import { createApplication, getApplication, updateApplication } from "../api/applications";
+import { useApplicationStore } from "../store/applicationStore";
 import type { ApplicationInput, ApplicationStatus } from "../types";
 
 const statuses: ApplicationStatus[] = ["SAVED", "APPLIED", "INTERVIEWING", "OFFER", "REJECTED", "ARCHIVED"];
@@ -43,8 +44,11 @@ function toDateInput(value: string | null) {
 export function ApplicationFormPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { upsertApplication } = useApplicationStore();
   const isEditing = Boolean(id);
+  const [isLoading, setIsLoading] = useState(isEditing);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   const {
     register,
@@ -63,6 +67,7 @@ export function ApplicationFormPage() {
 
     getApplication(id)
       .then((application) => {
+        upsertApplication(application);
         reset({
           companyName: application.companyName,
           jobTitle: application.jobTitle,
@@ -76,20 +81,29 @@ export function ApplicationFormPage() {
           notes: application.notes || ""
         });
       })
-      .catch((err: Error) => setLoadError(err.message));
-  }, [id, reset]);
+      .catch((err: Error) => setLoadError(err.message))
+      .finally(() => setIsLoading(false));
+  }, [id, reset, upsertApplication]);
 
   async function onSubmit(values: ApplicationFormValues) {
     const payload: ApplicationInput = values;
 
-    if (id) {
-      const updated = await updateApplication(id, payload);
-      navigate(`/applications/${updated.id}`);
-      return;
-    }
+    try {
+      setSaveError(null);
 
-    const created = await createApplication(payload);
-    navigate(`/applications/${created.id}`);
+      if (id) {
+        const updated = await updateApplication(id, payload);
+        upsertApplication(updated);
+        navigate(`/applications/${updated.id}`);
+        return;
+      }
+
+      const created = await createApplication(payload);
+      upsertApplication(created);
+      navigate(`/applications/${created.id}`);
+    } catch (err) {
+      setSaveError(err instanceof Error ? err.message : "Save failed");
+    }
   }
 
   return (
@@ -102,7 +116,10 @@ export function ApplicationFormPage() {
       </div>
 
       {loadError && <p className="error">Could not load application: {loadError}</p>}
+      {saveError && <p className="error">Could not save application: {saveError}</p>}
+      {isLoading && <p className="muted">Loading application...</p>}
 
+      {!isLoading && !loadError && (
       <form className="application-form" onSubmit={handleSubmit(onSubmit)}>
         <label>
           Company name
@@ -166,7 +183,11 @@ export function ApplicationFormPage() {
         <button className="button" type="submit" disabled={isSubmitting}>
           {isSubmitting ? "Saving..." : "Save application"}
         </button>
+        <Link className="button secondary" to={id ? `/applications/${id}` : "/applications"}>
+          Cancel
+        </Link>
       </form>
+      )}
     </section>
   );
 }

@@ -3,7 +3,7 @@ import { getApplications } from "../api/applications";
 import { useApplicationStore } from "../store/applicationStore";
 import type { ApplicationStatus } from "../types";
 
-const trackedStatuses: ApplicationStatus[] = ["APPLIED", "INTERVIEWING", "REJECTED", "OFFER"];
+const trackedStatuses: ApplicationStatus[] = ["SAVED", "APPLIED", "INTERVIEWING", "OFFER", "REJECTED", "ARCHIVED"];
 
 export function DashboardPage() {
   const { applications, setApplications } = useApplicationStore();

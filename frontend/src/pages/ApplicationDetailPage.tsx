@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import { getApplication } from "../api/applications";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { deleteApplication, getApplication } from "../api/applications";
+import { useApplicationStore } from "../store/applicationStore";
 import type { Application } from "../types";
 
 function display(value: string | null) {
@@ -17,9 +18,13 @@ function formatDate(date: string | null) {
 
 export function ApplicationDetailPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const { removeApplication, upsertApplication } = useApplicationStore();
   const [application, setApplication] = useState<Application | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!id) {
@@ -31,11 +36,36 @@ export function ApplicationDetailPage() {
     getApplication(id)
       .then((data) => {
         setApplication(data);
+        upsertApplication(data);
         setError(null);
       })
       .catch((err: Error) => setError(err.message))
       .finally(() => setIsLoading(false));
-  }, [id]);
+  }, [id, upsertApplication]);
+
+  async function handleDelete() {
+    if (!application) {
+      return;
+    }
+
+    const confirmed = window.confirm("Delete this application? This cannot be undone.");
+
+    if (!confirmed) {
+      return;
+    }
+
+    setIsDeleting(true);
+    setDeleteError(null);
+
+    try {
+      await deleteApplication(String(application.id));
+      removeApplication(application.id);
+      navigate("/applications");
+    } catch (err) {
+      setDeleteError(err instanceof Error ? err.message : "Delete failed");
+      setIsDeleting(false);
+    }
+  }
 
   if (isLoading) {
     return <p className="muted">Loading application...</p>;
@@ -53,12 +83,30 @@ export function ApplicationDetailPage() {
           <h2>{application.companyName}</h2>
           <p className="subtitle">{application.jobTitle}</p>
         </div>
-        <Link className="button secondary" to={`/applications/${application.id}/edit`}>
-          Edit
-        </Link>
+        <div className="actions">
+          <Link className="button secondary" to="/applications">
+            Back to Applications
+          </Link>
+          <Link className="button secondary" to={`/applications/${application.id}/edit`}>
+            Edit
+          </Link>
+          <button className="button danger" type="button" onClick={handleDelete} disabled={isDeleting}>
+            {isDeleting ? "Deleting..." : "Delete"}
+          </button>
+        </div>
       </div>
 
+      {deleteError && <p className="error">Could not delete application: {deleteError}</p>}
+
       <dl className="detail-grid">
+        <div>
+          <dt>Company</dt>
+          <dd>{application.companyName}</dd>
+        </div>
+        <div>
+          <dt>Job title</dt>
+          <dd>{application.jobTitle}</dd>
+        </div>
         <div>
           <dt>Job URL</dt>
           <dd>{application.jobUrl ? <a href={application.jobUrl}>{application.jobUrl}</a> : "Not set"}</dd>
@@ -72,6 +120,12 @@ export function ApplicationDetailPage() {
           <dd>{display(application.source)}</dd>
         </div>
         <div>
+          <dt>Status</dt>
+          <dd>
+            <span className="status">{application.status}</span>
+          </dd>
+        </div>
+        <div>
           <dt>Applied date</dt>
           <dd>{formatDate(application.appliedDate)}</dd>
         </div>
@@ -82,6 +136,14 @@ export function ApplicationDetailPage() {
         <div>
           <dt>Follow-up date</dt>
           <dd>{formatDate(application.followUpDate)}</dd>
+        </div>
+        <div>
+          <dt>Created</dt>
+          <dd>{formatDate(application.createdAt)}</dd>
+        </div>
+        <div>
+          <dt>Updated</dt>
+          <dd>{formatDate(application.updatedAt)}</dd>
         </div>
       </dl>
 

@@ -110,6 +110,15 @@ a:hover {
   color: #21433f;
 }
 
+.button.danger {
+  background: #be123c;
+}
+
+.button.small {
+  font-size: 0.9rem;
+  padding: 7px 10px;
+}
+
 .button:disabled {
   cursor: not-allowed;
   opacity: 0.65;
@@ -150,6 +159,38 @@ a:hover {
 
 .table-wrap {
   overflow-x: auto;
+}
+
+.filters {
+  align-items: end;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(220px, 1fr) minmax(180px, 240px);
+  margin-bottom: 18px;
+  max-width: 720px;
+}
+
+.filters label {
+  color: #344054;
+  display: grid;
+  font-weight: 700;
+  gap: 8px;
+}
+
+.filters input,
+.filters select {
+  border: 1px solid #cfd4dc;
+  border-radius: 8px;
+  font: inherit;
+  padding: 10px 12px;
+  width: 100%;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
 }
 
 table {
@@ -283,5 +324,13 @@ dd {
 
   .application-form {
     grid-template-columns: 1fr;
+  }
+
+  .filters {
+    grid-template-columns: 1fr;
+  }
+
+  .actions {
+    justify-content: flex-start;
   }
 }

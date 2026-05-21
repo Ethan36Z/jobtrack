@@ -1,6 +1,11 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 
 export function Layout() {
+  const { pathname } = useLocation();
+  const isDashboardActive = pathname === "/" || pathname === "/dashboard";
+  const isNewApplicationActive = pathname === "/applications/new";
+  const isApplicationsActive = pathname === "/applications" || (pathname.startsWith("/applications/") && !isNewApplicationActive);
+
   return (
     <div className="app-shell">
       <aside className="sidebar">
@@ -9,11 +14,15 @@ export function Layout() {
           <h1>JobTrack</h1>
         </div>
         <nav>
-          <NavLink to="/" end>
+          <Link className={isDashboardActive ? "active" : undefined} to="/">
             Dashboard
-          </NavLink>
-          <NavLink to="/applications">Applications</NavLink>
-          <NavLink to="/applications/new">New Application</NavLink>
+          </Link>
+          <Link className={isApplicationsActive ? "active" : undefined} to="/applications">
+            Applications
+          </Link>
+          <Link className={isNewApplicationActive ? "active" : undefined} to="/applications/new">
+            New Application
+          </Link>
         </nav>
       </aside>
       <main className="content">
