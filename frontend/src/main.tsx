@@ -7,6 +7,7 @@ import { ApplicationFormPage } from "./pages/ApplicationFormPage";
 import { ApplicationsPage } from "./pages/ApplicationsPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { NotFoundPage } from "./pages/NotFoundPage";
+import { ResumeVersionsPage } from "./pages/ResumeVersionsPage";
 import "./styles.css";
 
 const router = createBrowserRouter([
@@ -21,6 +22,7 @@ const router = createBrowserRouter([
       { path: "applications/new", element: <ApplicationFormPage /> },
       { path: "applications/:id", element: <ApplicationDetailPage /> },
       { path: "applications/:id/edit", element: <ApplicationFormPage /> },
+      { path: "resume-versions", element: <ResumeVersionsPage /> },
       { path: "*", element: <NotFoundPage /> }
     ]
   }

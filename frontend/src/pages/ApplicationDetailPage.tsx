@@ -194,6 +194,23 @@ export function ApplicationDetailPage() {
           <dd>{formatDate(application.appliedDate)}</dd>
         </div>
         <div>
+          <dt>Resume version</dt>
+          <dd>
+            {application.resumeVersion ? (
+              <>
+                {application.resumeVersion.fileUrl ? (
+                  <a href={application.resumeVersion.fileUrl}>{application.resumeVersion.name}</a>
+                ) : (
+                  application.resumeVersion.name
+                )}
+                {application.resumeVersion.targetRole ? ` - ${application.resumeVersion.targetRole}` : ""}
+              </>
+            ) : (
+              "Not set"
+            )}
+          </dd>
+        </div>
+        <div>
           <dt>Created</dt>
           <dd>{formatDate(application.createdAt)}</dd>
         </div>

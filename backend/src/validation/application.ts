@@ -32,6 +32,14 @@ const optionalText = z
   .nullable()
   .transform((value) => value || null);
 
+const optionalRelationId = z
+  .number()
+  .int()
+  .positive()
+  .optional()
+  .nullable()
+  .transform((value) => value || null);
+
 export const applicationSchema = z.object({
   companyName: z.string().trim().min(1, "Company name is required"),
   jobTitle: z.string().trim().min(1, "Job title is required"),
@@ -42,6 +50,7 @@ export const applicationSchema = z.object({
   appliedDate: optionalDate,
   nextAction: optionalText,
   followUpDate: optionalDate,
+  resumeVersionId: optionalRelationId,
   notes: optionalText
 });
 

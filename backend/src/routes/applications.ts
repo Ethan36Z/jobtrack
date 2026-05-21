@@ -27,7 +27,8 @@ applicationsRouter.get("/:id", async (req, res, next) => {
     }
 
     const application = await prisma.application.findUnique({
-      where: { id }
+      where: { id },
+      include: { resumeVersion: true }
     });
 
     if (!application) {

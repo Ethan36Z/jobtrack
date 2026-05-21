@@ -17,6 +17,8 @@ export type Application = {
   appliedDate: string | null;
   nextAction: string | null;
   followUpDate: string | null;
+  resumeVersionId: number | null;
+  resumeVersion?: ResumeVersion | null;
   notes: string | null;
   createdAt: string;
   updatedAt: string;
@@ -32,6 +34,24 @@ export type ApplicationInput = {
   appliedDate?: string;
   nextAction?: string;
   followUpDate?: string;
+  resumeVersionId?: number | null;
+  notes?: string;
+};
+
+export type ResumeVersion = {
+  id: number;
+  name: string;
+  targetRole: string | null;
+  fileUrl: string | null;
+  notes: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type ResumeVersionInput = {
+  name: string;
+  targetRole?: string;
+  fileUrl?: string;
   notes?: string;
 };
 

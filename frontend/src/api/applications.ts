@@ -1,4 +1,4 @@
-import type { Application, ApplicationInput, InterviewNote, InterviewNoteInput } from "../types";
+import type { Application, ApplicationInput, InterviewNote, InterviewNoteInput, ResumeVersion, ResumeVersionInput } from "../types";
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000";
 
@@ -71,6 +71,34 @@ export function updateInterviewNote(id: string, input: Partial<InterviewNoteInpu
 
 export function deleteInterviewNote(id: string) {
   return request<void>(`/api/interview-notes/${id}`, {
+    method: "DELETE"
+  });
+}
+
+export function getResumeVersions() {
+  return request<ResumeVersion[]>("/api/resume-versions");
+}
+
+export function getResumeVersion(id: string) {
+  return request<ResumeVersion>(`/api/resume-versions/${id}`);
+}
+
+export function createResumeVersion(input: ResumeVersionInput) {
+  return request<ResumeVersion>("/api/resume-versions", {
+    method: "POST",
+    body: JSON.stringify(input)
+  });
+}
+
+export function updateResumeVersion(id: string, input: Partial<ResumeVersionInput>) {
+  return request<ResumeVersion>(`/api/resume-versions/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(input)
+  });
+}
+
+export function deleteResumeVersion(id: string) {
+  return request<void>(`/api/resume-versions/${id}`, {
     method: "DELETE"
   });
 }

@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
-import { createApplication, getApplication, updateApplication } from "../api/applications";
+import { createApplication, getApplication, getResumeVersions, updateApplication } from "../api/applications";
 import { useApplicationStore } from "../store/applicationStore";
-import type { ApplicationInput, ApplicationStatus } from "../types";
+import type { ApplicationInput, ApplicationStatus, ResumeVersion } from "../types";
 
 const statuses: ApplicationStatus[] = ["SAVED", "APPLIED", "INTERVIEWING", "OFFER", "REJECTED", "ARCHIVED"];
 
@@ -19,6 +19,7 @@ const applicationFormSchema = z.object({
   appliedDate: z.string().optional(),
   nextAction: z.string().optional(),
   followUpDate: z.string().optional(),
+  resumeVersionId: z.string().optional(),
   notes: z.string().optional()
 });
 
@@ -34,6 +35,7 @@ const defaultValues: ApplicationFormValues = {
   appliedDate: "",
   nextAction: "",
   followUpDate: "",
+  resumeVersionId: "",
   notes: ""
 };
 
@@ -49,6 +51,8 @@ export function ApplicationFormPage() {
   const [isLoading, setIsLoading] = useState(isEditing);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [resumeVersions, setResumeVersions] = useState<ResumeVersion[]>([]);
+  const [resumeVersionsError, setResumeVersionsError] = useState<string | null>(null);
 
   const {
     register,
@@ -59,6 +63,15 @@ export function ApplicationFormPage() {
     resolver: zodResolver(applicationFormSchema),
     defaultValues
   });
+
+  useEffect(() => {
+    getResumeVersions()
+      .then((versions) => {
+        setResumeVersions(versions);
+        setResumeVersionsError(null);
+      })
+      .catch((err: Error) => setResumeVersionsError(err.message));
+  }, []);
 
   useEffect(() => {
     if (!id) {
@@ -78,6 +91,7 @@ export function ApplicationFormPage() {
           appliedDate: toDateInput(application.appliedDate),
           nextAction: application.nextAction || "",
           followUpDate: toDateInput(application.followUpDate),
+          resumeVersionId: application.resumeVersionId ? String(application.resumeVersionId) : "",
           notes: application.notes || ""
         });
       })
@@ -86,7 +100,10 @@ export function ApplicationFormPage() {
   }, [id, reset, upsertApplication]);
 
   async function onSubmit(values: ApplicationFormValues) {
-    const payload: ApplicationInput = values;
+    const payload: ApplicationInput = {
+      ...values,
+      resumeVersionId: values.resumeVersionId ? Number(values.resumeVersionId) : null
+    };
 
     try {
       setSaveError(null);
@@ -117,6 +134,7 @@ export function ApplicationFormPage() {
 
       {loadError && <p className="error">Could not load application: {loadError}</p>}
       {saveError && <p className="error">Could not save application: {saveError}</p>}
+      {resumeVersionsError && <p className="error">Could not load resume versions: {resumeVersionsError}</p>}
       {isLoading && <p className="muted">Loading application...</p>}
 
       {!isLoading && !loadError && (
@@ -168,6 +186,18 @@ export function ApplicationFormPage() {
         <label>
           Follow-up date
           <input type="date" {...register("followUpDate")} />
+        </label>
+
+        <label>
+          Resume version
+          <select {...register("resumeVersionId")}>
+            <option value="">Not set</option>
+            {resumeVersions.map((version) => (
+              <option key={version.id} value={version.id}>
+                {version.name}
+              </option>
+            ))}
+          </select>
         </label>
 
         <label className="wide">

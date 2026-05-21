@@ -5,6 +5,7 @@ export function Layout() {
   const isDashboardActive = pathname === "/" || pathname === "/dashboard";
   const isNewApplicationActive = pathname === "/applications/new";
   const isApplicationsActive = pathname === "/applications" || (pathname.startsWith("/applications/") && !isNewApplicationActive);
+  const isResumeVersionsActive = pathname.startsWith("/resume-versions");
 
   return (
     <div className="app-shell">
@@ -22,6 +23,9 @@ export function Layout() {
           </Link>
           <Link className={isNewApplicationActive ? "active" : undefined} to="/applications/new">
             New Application
+          </Link>
+          <Link className={isResumeVersionsActive ? "active" : undefined} to="/resume-versions">
+            Resume Versions
           </Link>
         </nav>
       </aside>

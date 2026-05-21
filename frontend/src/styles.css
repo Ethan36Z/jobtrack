@@ -137,6 +137,8 @@ a:hover {
 .follow-up-panel,
 .interview-note-card,
 .interview-note-form,
+.resume-version-card,
+.resume-version-form,
 .detail-grid > div,
 .table-wrap {
   background: #fff;
@@ -400,7 +402,9 @@ tr:last-child td {
 }
 
 .interview-note-form input,
-.interview-note-form textarea {
+.interview-note-form textarea,
+.resume-version-form input,
+.resume-version-form textarea {
   border: 1px solid #cfd4dc;
   border-radius: 8px;
   font: inherit;
@@ -412,6 +416,56 @@ tr:last-child td {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+}
+
+.resume-version-list {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.resume-version-card,
+.resume-version-form {
+  padding: 18px;
+}
+
+.resume-version-card {
+  align-items: start;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(220px, 1fr) minmax(220px, 1.5fr) auto;
+}
+
+.resume-version-card h3,
+.resume-version-form h3 {
+  margin: 0;
+}
+
+.resume-version-card p {
+  margin: 4px 0 0;
+}
+
+.resume-version-form {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.resume-version-form h3,
+.resume-version-form .wide {
+  grid-column: 1 / -1;
+}
+
+.resume-version-form label {
+  color: #344054;
+  display: grid;
+  font-weight: 700;
+  gap: 8px;
+}
+
+.resume-version-form span {
+  color: #be123c;
+  font-size: 0.85rem;
 }
 
 dt {
@@ -501,7 +555,9 @@ dd {
   .follow-up-item,
   .follow-up-summary,
   .interview-note-details,
-  .interview-note-form {
+  .interview-note-form,
+  .resume-version-card,
+  .resume-version-form {
     align-items: start;
     grid-template-columns: 1fr;
   }
