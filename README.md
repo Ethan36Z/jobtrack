@@ -1,6 +1,6 @@
 # JobTrack
 
-JobTrack is a single-user full-stack job application tracker for managing job applications, interview preparation, resume versions, next actions, and follow-up tasks.
+JobTrack is a single-user full-stack job application tracker for managing job applications, statuses, next actions, and follow-up dates.
 
 This V1 milestone intentionally does not include authentication, admin features, deployment, Docker, or multi-user support.
 
@@ -123,10 +123,17 @@ The frontend runs at `http://localhost:5173`.
 - `PUT /api/applications/:id`
 - `DELETE /api/applications/:id`
 
-## V1 TODOs
+## V1 Scope
 
-- Add resume version tracking.
-- Add interview prep notes.
-- Add richer filtering and search for applications.
-- Add delete controls in the frontend.
-- Add automated tests.
+- Dashboard backed by real application data
+- Application list, detail, create, edit, and delete flows
+- Search by company or job title
+- Status filtering
+- Basic loading, error, and empty states
+
+## Future Ideas
+
+- Automated tests
+- Interview notes
+- Resume version tracking
+- Company research
