@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { deleteApplication, getApplications } from "../api/applications";
 import { useApplicationStore } from "../store/applicationStore";
 import type { ApplicationStatus } from "../types";
+import { getFollowUpLabel, getFollowUpStatus, parseApiDateAsLocalDay } from "../utils/followUp";
 
 const statuses: Array<ApplicationStatus | "ALL"> = ["ALL", "SAVED", "APPLIED", "INTERVIEWING", "OFFER", "REJECTED", "ARCHIVED"];
 
@@ -11,7 +12,7 @@ function formatDate(date: string | null) {
     return "Not set";
   }
 
-  return new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric", year: "numeric" }).format(new Date(date));
+  return new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric", year: "numeric" }).format(parseApiDateAsLocalDay(date));
 }
 
 export function ApplicationsPage() {
@@ -129,7 +130,9 @@ export function ApplicationsPage() {
                     <th>Role</th>
                     <th>Status</th>
                     <th>Applied</th>
+                    <th>Next action</th>
                     <th>Follow up</th>
+                    <th>Follow-up status</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -139,14 +142,18 @@ export function ApplicationsPage() {
                       <td>
                         <Link to={`/applications/${application.id}`}>{application.companyName}</Link>
                       </td>
-                      <td>
-                        <Link to={`/applications/${application.id}`}>{application.jobTitle}</Link>
-                      </td>
+                      <td>{application.jobTitle}</td>
                       <td>
                         <span className="status">{application.status}</span>
                       </td>
                       <td>{formatDate(application.appliedDate)}</td>
+                      <td>{application.nextAction || "Not set"}</td>
                       <td>{formatDate(application.followUpDate)}</td>
+                      <td>
+                        <span className={`follow-up-label ${getFollowUpStatus(application.followUpDate)}`}>
+                          {application.followUpDate ? getFollowUpLabel(getFollowUpStatus(application.followUpDate)) : "No follow-up"}
+                        </span>
+                      </td>
                       <td>
                         <button
                           className="button danger small"

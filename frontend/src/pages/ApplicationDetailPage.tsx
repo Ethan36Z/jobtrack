@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { deleteApplication, getApplication } from "../api/applications";
 import { useApplicationStore } from "../store/applicationStore";
 import type { Application } from "../types";
+import { getFollowUpLabel, getFollowUpStatus, parseApiDateAsLocalDay } from "../utils/followUp";
 
 function display(value: string | null) {
   return value || "Not set";
@@ -13,7 +14,7 @@ function formatDate(date: string | null) {
     return "Not set";
   }
 
-  return new Intl.DateTimeFormat(undefined, { dateStyle: "medium" }).format(new Date(date));
+  return new Intl.DateTimeFormat(undefined, { dateStyle: "medium" }).format(parseApiDateAsLocalDay(date));
 }
 
 export function ApplicationDetailPage() {
@@ -75,6 +76,8 @@ export function ApplicationDetailPage() {
     return <p className="error">Could not load application: {error || "Not found"}</p>;
   }
 
+  const followUpStatus = getFollowUpStatus(application.followUpDate);
+
   return (
     <section>
       <div className="page-header">
@@ -97,6 +100,29 @@ export function ApplicationDetailPage() {
       </div>
 
       {deleteError && <p className="error">Could not delete application: {deleteError}</p>}
+
+      <section className="follow-up-panel">
+        <div>
+          <p className="eyebrow">Next Step</p>
+          <h3>Follow-up</h3>
+        </div>
+        <dl className="follow-up-summary">
+          <div>
+            <dt>Next action</dt>
+            <dd>{display(application.nextAction)}</dd>
+          </div>
+          <div>
+            <dt>Follow-up date</dt>
+            <dd>{formatDate(application.followUpDate)}</dd>
+          </div>
+          <div>
+            <dt>Status</dt>
+            <dd>
+              <span className={`follow-up-label ${followUpStatus}`}>{getFollowUpLabel(followUpStatus)}</span>
+            </dd>
+          </div>
+        </dl>
+      </section>
 
       <dl className="detail-grid">
         <div>
@@ -128,14 +154,6 @@ export function ApplicationDetailPage() {
         <div>
           <dt>Applied date</dt>
           <dd>{formatDate(application.appliedDate)}</dd>
-        </div>
-        <div>
-          <dt>Next action</dt>
-          <dd>{display(application.nextAction)}</dd>
-        </div>
-        <div>
-          <dt>Follow-up date</dt>
-          <dd>{formatDate(application.followUpDate)}</dd>
         </div>
         <div>
           <dt>Created</dt>

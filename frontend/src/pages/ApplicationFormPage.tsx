@@ -171,8 +171,8 @@ export function ApplicationFormPage() {
         </label>
 
         <label className="wide">
-          Next action
-          <input {...register("nextAction")} />
+          Next action / follow-up task
+          <input placeholder="Example: Send recruiter follow-up" {...register("nextAction")} />
         </label>
 
         <label className="wide">

@@ -128,11 +128,13 @@ a:hover {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 16px;
+  margin-bottom: 28px;
 }
 
 .stat-card,
 .empty-state,
 .notes,
+.follow-up-panel,
 .detail-grid > div,
 .table-wrap {
   background: #fff;
@@ -226,6 +228,37 @@ tr:last-child td {
   padding: 4px 8px;
 }
 
+.follow-up-label {
+  background: #f2f4f7;
+  border: 1px solid #e4e7ec;
+  border-radius: 999px;
+  color: #344054;
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 750;
+  line-height: 1;
+  padding: 5px 9px;
+  white-space: nowrap;
+}
+
+.follow-up-label.overdue {
+  background: #fff1f2;
+  border-color: #fecdd3;
+  color: #be123c;
+}
+
+.follow-up-label.today {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+  color: #1d4ed8;
+}
+
+.follow-up-label.upcoming {
+  background: #eef6f4;
+  border-color: #cfe7e1;
+  color: #25635b;
+}
+
 .empty-state {
   padding: 28px;
 }
@@ -246,8 +279,64 @@ tr:last-child td {
 }
 
 .detail-grid > div,
-.notes {
+.notes,
+.follow-up-panel {
   padding: 18px;
+}
+
+.panel-section {
+  margin-top: 28px;
+}
+
+.section-header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.section-header h3,
+.follow-up-panel h3 {
+  margin: 0;
+}
+
+.follow-up-list {
+  display: grid;
+  gap: 10px;
+}
+
+.follow-up-item {
+  align-items: center;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  display: grid;
+  gap: 14px;
+  grid-template-columns: minmax(180px, 1.4fr) auto minmax(180px, 1fr) minmax(120px, auto) auto;
+  padding: 14px 16px;
+}
+
+.follow-up-item p {
+  margin: 0;
+}
+
+.follow-up-item > div p {
+  color: #667085;
+  margin-top: 4px;
+}
+
+.follow-up-panel {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.follow-up-summary {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(180px, 1fr) minmax(160px, auto) auto;
+  margin: 0;
 }
 
 dt {
@@ -332,5 +421,11 @@ dd {
 
   .actions {
     justify-content: flex-start;
+  }
+
+  .follow-up-item,
+  .follow-up-summary {
+    align-items: start;
+    grid-template-columns: 1fr;
   }
 }
