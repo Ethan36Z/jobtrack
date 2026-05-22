@@ -5,6 +5,7 @@ export function Layout() {
   const isDashboardActive = pathname === "/" || pathname === "/dashboard";
   const isNewApplicationActive = pathname === "/applications/new";
   const isApplicationsActive = pathname === "/applications" || (pathname.startsWith("/applications/") && !isNewApplicationActive);
+  const isInterviewPrepActive = pathname.startsWith("/interview-prep");
   const isResumeVersionsActive = pathname.startsWith("/resume-versions");
 
   return (
@@ -23,6 +24,9 @@ export function Layout() {
           </Link>
           <Link className={isNewApplicationActive ? "active" : undefined} to="/applications/new">
             New Application
+          </Link>
+          <Link className={isInterviewPrepActive ? "active" : undefined} to="/interview-prep">
+            Interview Prep
           </Link>
           <Link className={isResumeVersionsActive ? "active" : undefined} to="/resume-versions">
             Resume Versions

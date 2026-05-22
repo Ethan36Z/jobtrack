@@ -6,6 +6,7 @@ import { ApplicationDetailPage } from "./pages/ApplicationDetailPage";
 import { ApplicationFormPage } from "./pages/ApplicationFormPage";
 import { ApplicationsPage } from "./pages/ApplicationsPage";
 import { DashboardPage } from "./pages/DashboardPage";
+import { InterviewPrepPage } from "./pages/InterviewPrepPage";
 import { NotFoundPage } from "./pages/NotFoundPage";
 import { ResumeVersionsPage } from "./pages/ResumeVersionsPage";
 import "./styles.css";
@@ -22,6 +23,7 @@ const router = createBrowserRouter([
       { path: "applications/new", element: <ApplicationFormPage /> },
       { path: "applications/:id", element: <ApplicationDetailPage /> },
       { path: "applications/:id/edit", element: <ApplicationFormPage /> },
+      { path: "interview-prep", element: <InterviewPrepPage /> },
       { path: "resume-versions", element: <ResumeVersionsPage /> },
       { path: "*", element: <NotFoundPage /> }
     ]

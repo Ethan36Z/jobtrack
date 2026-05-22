@@ -10,6 +10,7 @@ export const applicationsRouter = Router();
 applicationsRouter.get("/", async (_req, res, next) => {
   try {
     const applications = await prisma.application.findMany({
+      include: { resumeVersion: true },
       orderBy: [{ followUpDate: "asc" }, { createdAt: "desc" }]
     });
 

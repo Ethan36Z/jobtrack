@@ -137,6 +137,8 @@ a:hover {
 .follow-up-panel,
 .interview-note-card,
 .interview-note-form,
+.interview-prep-card,
+.prep-focus-card,
 .company-research-card,
 .company-research-form,
 .resume-version-card,
@@ -376,6 +378,49 @@ tr:last-child td {
 .interview-note-header p {
   color: #667085;
   margin: 6px 0 0;
+}
+
+.interview-prep-grid,
+.prep-focus-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.interview-prep-card,
+.prep-focus-card {
+  padding: 18px;
+}
+
+.interview-prep-card-header {
+  align-items: flex-start;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.interview-prep-card-header h3,
+.prep-focus-card h4 {
+  margin: 0;
+}
+
+.interview-prep-card-header p,
+.prep-focus-card p {
+  color: #667085;
+  margin: 6px 0 0;
+}
+
+.interview-prep-details {
+  display: grid;
+  gap: 14px;
+  margin: 0 0 16px;
+}
+
+.quick-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .interview-note-details {
