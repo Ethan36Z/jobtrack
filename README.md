@@ -1,8 +1,14 @@
 # JobTrack
 
-JobTrack is a single-user full-stack job application tracker for managing applications, follow-ups, interview notes, resume versions, and company research notes. It is built as a portfolio-ready project with a real React frontend, Express API, Prisma data model, and MySQL database.
+JobTrack is a single-user full-stack job application tracker for organizing applications, follow-ups, interview preparation, resume versions, and company research in one place.
 
-This project intentionally does not include authentication, admin features, deployment, Docker, scraping, browser extensions, email/calendar sync, or AI features.
+## Problem
+
+Job searching often spreads important details across spreadsheets, notes apps, email threads, job boards, and memory. JobTrack solves that by giving a candidate one focused workspace to track each application, plan follow-ups, record interview notes, connect the resume version used, and collect company research before interviews.
+
+## Portfolio Summary
+
+JobTrack is a single-user full-stack job application tracker built as a portfolio project. The frontend is built with React, TypeScript, Vite, React Router, React Hook Form, Zod, and Zustand. The backend is an Express + TypeScript API backed by Prisma and MySQL. The app supports application CRUD, search, status filtering, dashboard stats, and a visual application pipeline. V2 expands the workflow with follow-up tracking, interview notes, resume versions, company research, and a read-only Interview Prep page. V3 adds portfolio demo readiness with seed demo data, relative demo dates, and documentation polish. The project is intentionally scoped and does not include auth, admin tooling, scraping, calendar/email sync, or AI features.
 
 ## Tech Stack
 
@@ -10,42 +16,57 @@ This project intentionally does not include authentication, admin features, depl
 - Backend: Node.js, Express, TypeScript, Prisma
 - Database: MySQL
 
-## Features
+## Key Features
 
 - Application CRUD with detail, edit, and delete flows
 - Search by company name or job title
-- Status filtering and dashboard stats
-- Follow-up workflow with next actions, follow-up dates, and dashboard follow-up cards
-- Interview notes attached to applications
-- Resume versions CRUD and optional application-to-resume-version linking
-- Company research notes attached to applications
-- Loading, error, and empty states for core workflows
-- Local demo seed data for portfolio walkthroughs
+- Status filtering and dashboard statistics
+- Follow-up workflow with next actions, follow-up dates, and status labels
+- Application Detail pipeline stepper for SAVED, APPLIED, INTERVIEWING, OFFER, REJECTED, and ARCHIVED states
+- Interview notes attached to each application
+- Resume versions CRUD with optional application-to-resume-version linking
+- Company research notes attached to each application
+- Interview Prep page focused on active interviewing applications
+- Local seed data for portfolio walkthroughs
+- Loading, error, and empty states across the main workflows
 
-## Project Structure
+## Screenshots
 
-```txt
-jobtrack/
-  backend/
-    prisma/
-    src/
-  frontend/
-    src/
-  README.md
-```
+Recommended screenshots:
 
-## Environment Files
+![Dashboard](docs/screenshots/dashboard.png)
+![Applications List](docs/screenshots/applications-list.png)
+![Application Detail with Pipeline](docs/screenshots/application-detail-pipeline.png)
+![Interview Prep](docs/screenshots/interview-prep.png)
+![Resume Versions](docs/screenshots/resume-versions.png)
 
-Create local `.env` files from the examples. Do not commit real `.env` files.
+## Local Setup
+
+Clone the repo, then install backend and frontend dependencies separately.
 
 Backend:
 
 ```bash
 cd backend
+npm install
 copy .env.example .env
 ```
 
-Example backend values:
+Frontend:
+
+```bash
+cd frontend
+npm install
+copy .env.example .env
+```
+
+On macOS/Linux, use `cp` instead of `copy`.
+
+## Environment Variables
+
+Do not commit real `.env` files. The examples are intentionally generic.
+
+Backend `.env`:
 
 ```env
 DATABASE_URL="mysql://USER:PASSWORD@localhost:3306/jobtrack"
@@ -53,55 +74,57 @@ PORT=4000
 FRONTEND_ORIGIN="http://localhost:5173"
 ```
 
-Frontend:
-
-```bash
-cd frontend
-copy .env.example .env
-```
-
-Example frontend value:
+Frontend `.env`:
 
 ```env
 VITE_API_BASE_URL=http://localhost:4000
 ```
 
-On macOS/Linux, use `cp` instead of `copy`.
-
 ## Database Setup
 
-Make sure MySQL is running, then create the local database:
+Make sure MySQL is running, then create the database:
 
 ```sql
 CREATE DATABASE jobtrack;
 ```
 
-From a MySQL shell:
+You can run that from a MySQL shell:
 
 ```bash
 mysql -u USER -p
 ```
 
-Then run the SQL command above.
+## Prisma Migrate
 
-## Backend Setup
+From `backend/`, generate the Prisma client and apply migrations:
 
 ```bash
-cd backend
-npm install
 npm run prisma:generate
 npm run prisma:migrate
 ```
 
-Optional demo seed data:
+## Prisma Seed
+
+From `backend/`, seed local demo data:
 
 ```bash
 npm run prisma:seed
 ```
 
-The seed script creates or updates a known set of portfolio demo records. It does not wipe the whole database. For the seeded demo applications, it refreshes their related demo interview notes and company research records so the demo stays predictable.
+The seed script creates or updates a known set of portfolio demo records. It does not wipe the whole database. For seeded demo applications, it refreshes their related demo interview notes and company research records so repeated demo runs stay predictable.
 
-Start the backend:
+Seed data includes:
+
+- 5 applications across SAVED, APPLIED, INTERVIEWING, OFFER, and REJECTED
+- Relative follow-up dates, including today and upcoming dates
+- 2 resume versions
+- Application-to-resume-version links
+- 2 interview notes
+- 2 company research records
+
+## Start Backend
+
+From `backend/`:
 
 ```bash
 npm run dev
@@ -115,59 +138,81 @@ Health check:
 GET http://localhost:4000/api/health
 ```
 
-## Frontend Setup
+## Start Frontend
+
+From `frontend/`:
 
 ```bash
-cd frontend
-npm install
 npm run dev
 ```
 
 The frontend runs at `http://localhost:5173`.
 
-## Useful Scripts
+## Demo Workflow
 
-Backend:
+1. Run migrations and seed demo data.
+2. Open the Dashboard to review stats and upcoming follow-ups.
+3. Open Applications to search, filter, and inspect the pipeline.
+4. Open an Application Detail page to review the pipeline stepper, follow-up section, resume version, company research, and interview notes.
+5. Open Interview Prep to focus on active interviewing applications.
+6. Open Resume Versions to review the resumes available for linking to applications.
 
-- `npm run dev`: start the Express API in watch mode
-- `npm run build`: compile TypeScript
-- `npm run start`: run the compiled server
-- `npm run prisma:generate`: generate Prisma client
-- `npm run prisma:migrate`: run Prisma migrations
-- `npm run prisma:seed`: seed local demo data
-- `npm run prisma:studio`: open Prisma Studio
+## Project Structure
 
-Frontend:
+```txt
+jobtrack/
+  backend/
+    prisma/
+      migrations/
+      seed.ts
+      schema.prisma
+    src/
+      routes/
+      validation/
+      server.ts
+  frontend/
+    src/
+      api/
+      components/
+      pages/
+      store/
+      utils/
+  docs/
+    screenshots/
+  README.md
+```
 
-- `npm run dev`: start Vite
-- `npm run build`: type-check and build production assets
-- `npm run preview`: preview the production build
+## Current Status
 
-## Completed V1
+V1 is complete:
 
 - Application model and REST API
 - Application create, read, update, and delete
-- Application detail page
-- Search by company or job title
-- Status filter
+- Search and status filtering
 - Dashboard stats backed by real API data
 - Basic loading, error, and empty states
 
-## Completed V2
+V2 is complete:
 
-- Follow-up workflow with `nextAction` and `followUpDate`
-- Dashboard follow-up section with overdue, today, upcoming, and no-date labels
-- Interview notes per application
-- Resume versions CRUD
-- Optional application-to-resume-version relation
-- Company research notes per application
-- V2 integration polish for routing, layout, and README accuracy
+- Follow-up workflow
+- Interview notes
+- Resume versions
+- Company research notes
+- Interview Prep page
+- V2 integration polish
+
+V3 polish completed so far:
+
+- Portfolio demo seed data
+- README cleanup
+- Relative demo follow-up dates
+- Application Detail pipeline stepper
+- Portfolio presentation documentation
 
 ## API Overview
 
-Core:
+Applications:
 
-- `GET /api/health`
 - `GET /api/applications`
 - `GET /api/applications/:id`
 - `POST /api/applications`
@@ -196,11 +241,25 @@ Company research:
 - `PUT /api/company-research/:id`
 - `DELETE /api/company-research/:id`
 
+## What I Learned
+
+- Designing a full-stack API around real user workflows
+- Modeling relational data with Prisma and MySQL
+- Managing Prisma migrations across multiple feature milestones
+- Building React Router page flows for list, detail, create, edit, and dashboard views
+- Keeping frontend and backend TypeScript types aligned
+- Using React Hook Form and Zod for practical validation
+- Organizing UI state, loading states, error states, and empty states
+- Controlling scope across V1, V2, and V3 without drifting into unrelated features
+
 ## Future Improvements
 
-- Auth/login as an optional later milestone
-- Protected routes and user ownership
+These are future ideas only and are not current features:
+
+- Auth/login as optional V4
+- Protected routes
+- User ownership and multi-user support
 - Deployment
 - Better automated tests
-- Calendar and email reminders
+- Calendar and email integration
 - AI-assisted resume and interview prep
