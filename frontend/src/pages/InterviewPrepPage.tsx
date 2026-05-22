@@ -2,15 +2,9 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { getApplications } from "../api/applications";
 import type { Application } from "../types";
-import { getFollowUpLabel, getFollowUpStatus, parseApiDateAsLocalDay } from "../utils/followUp";
-
-function formatDate(date: string | null) {
-  if (!date) {
-    return "Not set";
-  }
-
-  return new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric", year: "numeric" }).format(parseApiDateAsLocalDay(date));
-}
+import { formatDisplayDate } from "../utils/dateFormat";
+import { getFollowUpLabel, getFollowUpStatus } from "../utils/followUp";
+import { getStatusBadgeClass } from "../utils/statusBadge";
 
 export function InterviewPrepPage() {
   const [applications, setApplications] = useState<Application[]>([]);
@@ -106,13 +100,13 @@ function InterviewPrepCard({ application }: { application: Application }) {
           <h3>{application.companyName}</h3>
           <p>{application.jobTitle}</p>
         </div>
-        <span className="status">{application.status}</span>
+        <span className={getStatusBadgeClass(application.status)}>{application.status}</span>
       </div>
 
       <dl className="interview-prep-details">
         <div>
           <dt>Follow-up date</dt>
-          <dd>{formatDate(application.followUpDate)}</dd>
+          <dd>{formatDisplayDate(application.followUpDate)}</dd>
         </div>
         <div>
           <dt>Follow-up status</dt>

@@ -3,17 +3,11 @@ import { Link } from "react-router-dom";
 import { getApplications } from "../api/applications";
 import { useApplicationStore } from "../store/applicationStore";
 import type { ApplicationStatus } from "../types";
-import { compareFollowUps, getFollowUpLabel, getFollowUpStatus, parseApiDateAsLocalDay } from "../utils/followUp";
+import { formatDisplayDate } from "../utils/dateFormat";
+import { compareFollowUps, getFollowUpLabel, getFollowUpStatus } from "../utils/followUp";
+import { getStatusBadgeClass } from "../utils/statusBadge";
 
 const trackedStatuses: ApplicationStatus[] = ["SAVED", "APPLIED", "INTERVIEWING", "OFFER", "REJECTED", "ARCHIVED"];
-
-function formatDate(date: string | null) {
-  if (!date) {
-    return "Not set";
-  }
-
-  return new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric", year: "numeric" }).format(parseApiDateAsLocalDay(date));
-}
 
 export function DashboardPage() {
   const { applications, setApplications } = useApplicationStore();
@@ -104,9 +98,9 @@ export function DashboardPage() {
                         <Link to={`/applications/${application.id}`}>{application.companyName}</Link>
                         <p>{application.jobTitle}</p>
                       </div>
-                      <span className="status">{application.status}</span>
+                      <span className={getStatusBadgeClass(application.status)}>{application.status}</span>
                       <p>{application.nextAction || "No next action set"}</p>
-                      <p>{formatDate(application.followUpDate)}</p>
+                      <p>{formatDisplayDate(application.followUpDate)}</p>
                       <span className={`follow-up-label ${followUpStatus}`}>{getFollowUpLabel(followUpStatus)}</span>
                     </article>
                   );

@@ -3,17 +3,11 @@ import { Link } from "react-router-dom";
 import { deleteApplication, getApplications } from "../api/applications";
 import { useApplicationStore } from "../store/applicationStore";
 import type { ApplicationStatus } from "../types";
-import { getFollowUpLabel, getFollowUpStatus, parseApiDateAsLocalDay } from "../utils/followUp";
+import { formatDisplayDate } from "../utils/dateFormat";
+import { getFollowUpLabel, getFollowUpStatus } from "../utils/followUp";
+import { getStatusBadgeClass } from "../utils/statusBadge";
 
 const statuses: Array<ApplicationStatus | "ALL"> = ["ALL", "SAVED", "APPLIED", "INTERVIEWING", "OFFER", "REJECTED", "ARCHIVED"];
-
-function formatDate(date: string | null) {
-  if (!date) {
-    return "Not set";
-  }
-
-  return new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric", year: "numeric" }).format(parseApiDateAsLocalDay(date));
-}
 
 export function ApplicationsPage() {
   const { applications, removeApplication, setApplications } = useApplicationStore();
@@ -144,11 +138,11 @@ export function ApplicationsPage() {
                       </td>
                       <td>{application.jobTitle}</td>
                       <td>
-                        <span className="status">{application.status}</span>
+                        <span className={getStatusBadgeClass(application.status)}>{application.status}</span>
                       </td>
-                      <td>{formatDate(application.appliedDate)}</td>
+                      <td>{formatDisplayDate(application.appliedDate)}</td>
                       <td>{application.nextAction || "Not set"}</td>
-                      <td>{formatDate(application.followUpDate)}</td>
+                      <td>{formatDisplayDate(application.followUpDate)}</td>
                       <td>
                         <span className={`follow-up-label ${getFollowUpStatus(application.followUpDate)}`}>
                           {application.followUpDate ? getFollowUpLabel(getFollowUpStatus(application.followUpDate)) : "No follow-up"}

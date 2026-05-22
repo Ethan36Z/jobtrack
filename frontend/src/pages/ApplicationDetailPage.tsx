@@ -17,18 +17,12 @@ import {
 } from "../api/applications";
 import { useApplicationStore } from "../store/applicationStore";
 import type { Application, CompanyResearch, CompanyResearchInput, InterviewNote, InterviewNoteInput } from "../types";
-import { getFollowUpLabel, getFollowUpStatus, parseApiDateAsLocalDay } from "../utils/followUp";
+import { formatDisplayDate } from "../utils/dateFormat";
+import { getFollowUpLabel, getFollowUpStatus } from "../utils/followUp";
+import { getStatusBadgeClass } from "../utils/statusBadge";
 
 function display(value: string | null) {
   return value || "Not set";
-}
-
-function formatDate(date: string | null) {
-  if (!date) {
-    return "Not set";
-  }
-
-  return new Intl.DateTimeFormat(undefined, { dateStyle: "medium" }).format(parseApiDateAsLocalDay(date));
 }
 
 function toDateInput(value: string | null) {
@@ -187,7 +181,7 @@ export function ApplicationDetailPage() {
           </div>
           <div>
             <dt>Follow-up date</dt>
-            <dd>{formatDate(application.followUpDate)}</dd>
+            <dd>{formatDisplayDate(application.followUpDate)}</dd>
           </div>
           <div>
             <dt>Status</dt>
@@ -222,12 +216,12 @@ export function ApplicationDetailPage() {
         <div>
           <dt>Status</dt>
           <dd>
-            <span className="status">{application.status}</span>
+            <span className={getStatusBadgeClass(application.status)}>{application.status}</span>
           </dd>
         </div>
         <div>
           <dt>Applied date</dt>
-          <dd>{formatDate(application.appliedDate)}</dd>
+          <dd>{formatDisplayDate(application.appliedDate)}</dd>
         </div>
         <div>
           <dt>Resume version</dt>
@@ -248,11 +242,11 @@ export function ApplicationDetailPage() {
         </div>
         <div>
           <dt>Created</dt>
-          <dd>{formatDate(application.createdAt)}</dd>
+          <dd>{formatDisplayDate(application.createdAt)}</dd>
         </div>
         <div>
           <dt>Updated</dt>
-          <dd>{formatDate(application.updatedAt)}</dd>
+          <dd>{formatDisplayDate(application.updatedAt)}</dd>
         </div>
       </dl>
 
@@ -685,7 +679,7 @@ function InterviewNotesSection({ applicationId }: { applicationId: number }) {
                 <div>
                   <h4>{note.roundName || "Interview note"}</h4>
                   <p>
-                    {formatDate(note.interviewDate)}
+                    {formatDisplayDate(note.interviewDate)}
                     {note.interviewer ? ` - ${note.interviewer}` : ""}
                     {note.format ? ` - ${note.format}` : ""}
                   </p>

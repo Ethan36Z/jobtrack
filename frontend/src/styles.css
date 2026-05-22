@@ -228,13 +228,52 @@ tr:last-child td {
 }
 
 .status {
-  background: #eef6f4;
+  background: #f2f4f7;
+  border: 1px solid #e4e7ec;
   border-radius: 999px;
-  color: #25635b;
+  color: #344054;
   display: inline-block;
   font-size: 0.78rem;
   font-weight: 750;
-  padding: 4px 8px;
+  line-height: 1;
+  padding: 5px 9px;
+  white-space: nowrap;
+}
+
+.status-saved {
+  background: #f3f6f8;
+  border-color: #d8e0e7;
+  color: #475467;
+}
+
+.status-applied {
+  background: #eef6f4;
+  border-color: #cfe7e1;
+  color: #25635b;
+}
+
+.status-interviewing {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+  color: #1d4ed8;
+}
+
+.status-offer {
+  background: #ecfdf3;
+  border-color: #bbf7d0;
+  color: #15803d;
+}
+
+.status-rejected {
+  background: #fff1f2;
+  border-color: #fecdd3;
+  color: #be123c;
+}
+
+.status-archived {
+  background: #f2f4f7;
+  border-color: #d0d5dd;
+  color: #667085;
 }
 
 .follow-up-label {
