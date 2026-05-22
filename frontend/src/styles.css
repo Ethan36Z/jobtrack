@@ -135,6 +135,7 @@ a:hover {
 .empty-state,
 .notes,
 .follow-up-panel,
+.pipeline-stepper,
 .interview-note-card,
 .interview-note-form,
 .interview-prep-card,
@@ -338,6 +339,131 @@ tr:last-child td {
   display: grid;
   gap: 16px;
   margin-bottom: 20px;
+}
+
+.pipeline-stepper {
+  display: grid;
+  gap: 18px;
+  margin-bottom: 20px;
+  padding: 18px;
+}
+
+.pipeline-stepper h3 {
+  margin: 0;
+}
+
+.pipeline-stepper ol {
+  display: grid;
+  gap: 0;
+  grid-template-columns: repeat(4, minmax(110px, 1fr));
+  list-style: none;
+  margin: 0;
+  overflow-x: auto;
+  padding: 0;
+}
+
+.pipeline-stepper li {
+  align-items: center;
+  color: #667085;
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  min-width: 110px;
+  position: relative;
+  text-align: center;
+}
+
+.pipeline-stepper li::before,
+.pipeline-stepper li::after {
+  background: #e5e7eb;
+  content: "";
+  height: 2px;
+  position: absolute;
+  top: 15px;
+  width: 50%;
+  z-index: 0;
+}
+
+.pipeline-stepper li::before {
+  left: 0;
+}
+
+.pipeline-stepper li::after {
+  right: 0;
+}
+
+.pipeline-stepper li:first-child::before,
+.pipeline-stepper li:last-child::after {
+  display: none;
+}
+
+.pipeline-stepper li.complete::before,
+.pipeline-stepper li.complete::after,
+.pipeline-stepper li.current::before {
+  background: #9bd3c8;
+}
+
+.pipeline-stepper li span {
+  align-items: center;
+  background: #f2f4f7;
+  border: 2px solid #d0d5dd;
+  border-radius: 999px;
+  color: #667085;
+  display: inline-flex;
+  font-size: 0.8rem;
+  font-weight: 800;
+  height: 32px;
+  justify-content: center;
+  position: relative;
+  width: 32px;
+  z-index: 1;
+}
+
+.pipeline-stepper li strong {
+  font-size: 0.78rem;
+}
+
+.pipeline-stepper li.complete span {
+  background: #eef6f4;
+  border-color: #9bd3c8;
+  color: #25635b;
+}
+
+.pipeline-stepper li.current {
+  color: #21433f;
+}
+
+.pipeline-stepper li.current span {
+  background: #25635b;
+  border-color: #25635b;
+  color: #fff;
+}
+
+.pipeline-stepper li.terminal-rejected,
+.pipeline-stepper li.terminal-archived {
+  margin-left: 10px;
+}
+
+.pipeline-stepper li.terminal-rejected::before,
+.pipeline-stepper li.terminal-archived::before {
+  display: block;
+  left: -50%;
+}
+
+.pipeline-stepper li.terminal-rejected span {
+  background: #fff1f2;
+  border-color: #fecdd3;
+  color: #be123c;
+}
+
+.pipeline-stepper li.terminal-archived span {
+  background: #f2f4f7;
+  border-color: #d0d5dd;
+  color: #475467;
+}
+
+.pipeline-stepper.terminal ol {
+  grid-template-columns: repeat(5, minmax(110px, 1fr));
 }
 
 .follow-up-summary {

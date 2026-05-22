@@ -88,8 +88,8 @@ async function main() {
       status: ApplicationStatus.INTERVIEWING,
       source: "LinkedIn",
       appliedDate: addDays(-14),
-      nextAction: "Send thank-you note and prep system design examples",
-      followUpDate: addDays(-1),
+      nextAction: "Prep system design examples before the technical screen",
+      followUpDate: addDays(1),
       resumeVersionId: backendResume.id,
       notes: "Strong fit for API platform work. Team values ownership and clear communication."
     }),
@@ -127,7 +127,7 @@ async function main() {
       source: "Recruiter outreach",
       appliedDate: addDays(-30),
       nextAction: "Review offer details and compare compensation",
-      followUpDate: addDays(3),
+      followUpDate: addDays(2),
       notes: "Offer received. Need to evaluate growth path and team fit."
     }),
     upsertDemoApplication({
@@ -138,6 +138,7 @@ async function main() {
       status: ApplicationStatus.REJECTED,
       source: "Indeed",
       appliedDate: addDays(-21),
+      followUpDate: addDays(-2),
       notes: "Rejected after phone screen. Useful practice for behavioral answers."
     })
   ]);

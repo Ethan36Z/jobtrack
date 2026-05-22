@@ -173,6 +173,8 @@ export function ApplicationDetailPage() {
 
       {deleteError && <p className="error">Could not delete application: {deleteError}</p>}
 
+      <ApplicationPipelineStepper status={application.status} />
+
       <section className="follow-up-panel">
         <div>
           <p className="eyebrow">Next Step</p>
@@ -262,6 +264,40 @@ export function ApplicationDetailPage() {
       <CompanyResearchSection applicationId={application.id} />
 
       <InterviewNotesSection applicationId={application.id} />
+    </section>
+  );
+}
+
+const pipelineSteps = ["SAVED", "APPLIED", "INTERVIEWING", "OFFER"] as const;
+
+function ApplicationPipelineStepper({ status }: { status: Application["status"] }) {
+  const activeIndex = pipelineSteps.indexOf(status as (typeof pipelineSteps)[number]);
+  const isTerminal = status === "REJECTED" || status === "ARCHIVED";
+
+  return (
+    <section className={`pipeline-stepper ${isTerminal ? "terminal" : ""}`}>
+      <div>
+        <p className="eyebrow">Pipeline</p>
+        <h3>Application Status</h3>
+      </div>
+      <ol>
+        {pipelineSteps.map((step, index) => {
+          const state = isTerminal ? "muted" : index < activeIndex ? "complete" : index === activeIndex ? "current" : "future";
+
+          return (
+            <li className={state} key={step}>
+              <span>{index + 1}</span>
+              <strong>{step}</strong>
+            </li>
+          );
+        })}
+        {isTerminal && (
+          <li className={`terminal-${status.toLowerCase()}`}>
+            <span>{status === "REJECTED" ? "!" : "-"}</span>
+            <strong>{status}</strong>
+          </li>
+        )}
+      </ol>
     </section>
   );
 }
