@@ -21,6 +21,8 @@ import { formatDisplayDate } from "../utils/dateFormat";
 import { getFollowUpLabel, getFollowUpStatus } from "../utils/followUp";
 import { getStatusBadgeClass } from "../utils/statusBadge";
 
+//===============================helper functions===============================
+
 function display(value: string | null) {
   return value || "Not set";
 }
@@ -83,6 +85,8 @@ const emptyCompanyResearchValues: CompanyResearchFormValues = {
   whyInterested: ""
 };
 
+//===============================main component===============================
+
 export function ApplicationDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -110,6 +114,8 @@ export function ApplicationDetailPage() {
       .finally(() => setIsLoading(false));
   }, [id, upsertApplication]);
 
+//===============================delete handler===============================
+
   async function handleDelete() {
     if (!application) {
       return;
@@ -133,6 +139,8 @@ export function ApplicationDetailPage() {
       setIsDeleting(false);
     }
   }
+
+//===============================rendering===============================
 
   if (isLoading) {
     return <p className="muted">Loading application...</p>;
@@ -167,7 +175,11 @@ export function ApplicationDetailPage() {
 
       {deleteError && <p className="error">Could not delete application: {deleteError}</p>}
 
+{/*===============================pipeline stepper===============================*/}
+
       <ApplicationPipelineStepper status={application.status} />
+
+{/*===============================follow-up panel===============================*/}
 
       <section className="follow-up-panel">
         <div>
@@ -191,6 +203,8 @@ export function ApplicationDetailPage() {
           </div>
         </dl>
       </section>
+
+{/*===============================application details===============================*/}
 
       <dl className="detail-grid">
         <div>
@@ -262,6 +276,8 @@ export function ApplicationDetailPage() {
   );
 }
 
+//===============================pipeline stepper===============================
+
 const pipelineSteps = ["SAVED", "APPLIED", "INTERVIEWING", "OFFER"] as const;
 
 function ApplicationPipelineStepper({ status }: { status: Application["status"] }) {
@@ -295,6 +311,8 @@ function ApplicationPipelineStepper({ status }: { status: Application["status"] 
     </section>
   );
 }
+
+//===============================company research section===============================
 
 function CompanyResearchSection({ applicationId }: { applicationId: number }) {
   const [companyResearch, setCompanyResearch] = useState<CompanyResearch | null>(null);
