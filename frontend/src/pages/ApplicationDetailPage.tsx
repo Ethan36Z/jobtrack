@@ -114,8 +114,6 @@ export function ApplicationDetailPage() {
       .finally(() => setIsLoading(false));
   }, [id, upsertApplication]);
 
-//===============================delete handler===============================
-
   async function handleDelete() {
     if (!application) {
       return;
