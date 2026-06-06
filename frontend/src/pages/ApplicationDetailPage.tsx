@@ -584,6 +584,8 @@ function toCompanyResearchFormValues(research: CompanyResearch): CompanyResearch
   };
 }
 
+//===============================interview notes section===============================
+
 function InterviewNotesSection({ applicationId }: { applicationId: number }) {
   const [interviewNotes, setInterviewNotes] = useState<InterviewNote[]>([]);
   const [editingNote, setEditingNote] = useState<InterviewNote | null>(null);
