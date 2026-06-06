@@ -406,9 +406,9 @@ function CompanyResearchSection({ applicationId }: { applicationId: number }) {
           <p className="eyebrow">Company Context</p>
           <h3>Company Research</h3>
         </div>
-        {!isLoading && !loadError && !isEditing && (
+        {!isLoading && !loadError && !isEditing && !companyResearch && (
           <button className="button secondary" type="button" onClick={startEditing}>
-            {companyResearch ? "Edit" : "Add research"}
+            Add research
           </button>
         )}
       </div>
@@ -424,6 +424,8 @@ function CompanyResearchSection({ applicationId }: { applicationId: number }) {
           <p>Add useful company context for interview prep and application decisions.</p>
         </div>
       )}
+
+{/*===============================company research display===============================*/}
 
       {!isLoading && !loadError && companyResearch && !isEditing && (
         <article className="company-research-card">
@@ -489,6 +491,8 @@ function CompanyResearchSection({ applicationId }: { applicationId: number }) {
           </div>
         </article>
       )}
+
+{/*===============================company research form===============================*/}
 
       {!isLoading && !loadError && isEditing && (
         <form className="company-research-form" onSubmit={handleSubmit(onSubmit)}>
@@ -562,6 +566,8 @@ function CompanyResearchSection({ applicationId }: { applicationId: number }) {
   );
 }
 
+//===============================company research data to form values===============================
+
 function toCompanyResearchFormValues(research: CompanyResearch): CompanyResearchFormValues {
   return {
     companyWebsite: research.companyWebsite || "",
@@ -581,6 +587,7 @@ function toCompanyResearchFormValues(research: CompanyResearch): CompanyResearch
 function InterviewNotesSection({ applicationId }: { applicationId: number }) {
   const [interviewNotes, setInterviewNotes] = useState<InterviewNote[]>([]);
   const [editingNote, setEditingNote] = useState<InterviewNote | null>(null);
+  const [isFormOpen, setIsFormOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -606,6 +613,13 @@ function InterviewNotesSection({ applicationId }: { applicationId: number }) {
       .finally(() => setIsLoading(false));
   }, [applicationId]);
 
+  function startAdding() {
+    setEditingNote(null);
+    setSaveError(null);
+    reset(emptyInterviewNoteValues);
+    setIsFormOpen(true);
+  }
+
   function startEditing(note: InterviewNote) {
     setEditingNote(note);
     setSaveError(null);
@@ -619,12 +633,14 @@ function InterviewNotesSection({ applicationId }: { applicationId: number }) {
       nextSteps: note.nextSteps || "",
       result: note.result || ""
     });
+    setIsFormOpen(true);
   }
 
   function cancelEditing() {
     setEditingNote(null);
     setSaveError(null);
     reset(emptyInterviewNoteValues);
+    setIsFormOpen(false);
   }
 
   async function onSubmit(values: InterviewNoteFormValues) {
@@ -642,7 +658,7 @@ function InterviewNotesSection({ applicationId }: { applicationId: number }) {
 
       const created = await createInterviewNote(String(applicationId), payload);
       setInterviewNotes((notes) => [created, ...notes]);
-      reset(emptyInterviewNoteValues);
+      cancelEditing();
     } catch (err) {
       setSaveError(err instanceof Error ? err.message : "Save failed");
     }
@@ -675,6 +691,11 @@ function InterviewNotesSection({ applicationId }: { applicationId: number }) {
           <p className="eyebrow">Interview Prep</p>
           <h3>Interview Notes</h3>
         </div>
+        {!isLoading && !loadError && !isFormOpen && (
+          <button className="button secondary" type="button" onClick={startAdding}>
+            Add note
+          </button>
+        )}
       </div>
 
       {isLoading && <p className="muted">Loading interview notes...</p>}
@@ -702,14 +723,6 @@ function InterviewNotesSection({ applicationId }: { applicationId: number }) {
                     {note.format ? ` - ${note.format}` : ""}
                   </p>
                 </div>
-                <div className="actions">
-                  <button className="button secondary small" type="button" onClick={() => startEditing(note)}>
-                    Edit
-                  </button>
-                  <button className="button danger small" type="button" onClick={() => handleDelete(note.id)}>
-                    Delete
-                  </button>
-                </div>
               </div>
 
               <dl className="interview-note-details">
@@ -730,65 +743,73 @@ function InterviewNotesSection({ applicationId }: { applicationId: number }) {
                   <dd>{display(note.result)}</dd>
                 </div>
               </dl>
+              <div className="form-actions">
+                <button className="button secondary small" type="button" onClick={() => startEditing(note)}>
+                  Edit
+                </button>
+                <button className="button danger small" type="button" onClick={() => handleDelete(note.id)}>
+                  Delete
+                </button>
+              </div>
             </article>
           ))}
         </div>
       )}
 
-      <form className="interview-note-form" onSubmit={handleSubmit(onSubmit)}>
-        <h4>{editingNote ? "Edit interview note" : "Add interview note"}</h4>
+      {isFormOpen && (
+        <form className="interview-note-form" onSubmit={handleSubmit(onSubmit)}>
+          <h4>{editingNote ? "Edit interview note" : "Add interview note"}</h4>
 
-        <label>
-          Round name
-          <input placeholder="Recruiter screen, onsite, final round" {...register("roundName")} />
-        </label>
+          <label>
+            Round name
+            <input placeholder="Recruiter screen, onsite, final round" {...register("roundName")} />
+          </label>
 
-        <label>
-          Interview date
-          <input type="date" {...register("interviewDate")} />
-        </label>
+          <label>
+            Interview date
+            <input type="date" {...register("interviewDate")} />
+          </label>
 
-        <label>
-          Interviewer
-          <input {...register("interviewer")} />
-        </label>
+          <label>
+            Interviewer
+            <input {...register("interviewer")} />
+          </label>
 
-        <label>
-          Format
-          <input placeholder="Phone, video, onsite" {...register("format")} />
-        </label>
+          <label>
+            Format
+            <input placeholder="Phone, video, onsite" {...register("format")} />
+          </label>
 
-        <label className="wide">
-          Summary
-          <textarea rows={3} {...register("summary")} />
-        </label>
+          <label className="wide">
+            Summary
+            <textarea rows={3} {...register("summary")} />
+          </label>
 
-        <label className="wide">
-          Questions
-          <textarea rows={3} {...register("questions")} />
-        </label>
+          <label className="wide">
+            Questions
+            <textarea rows={3} {...register("questions")} />
+          </label>
 
-        <label className="wide">
-          Next steps
-          <textarea rows={3} {...register("nextSteps")} />
-        </label>
+          <label className="wide">
+            Next steps
+            <textarea rows={3} {...register("nextSteps")} />
+          </label>
 
-        <label className="wide">
-          Result
-          <input placeholder="Pending, moved forward, rejected, offer" {...register("result")} />
-        </label>
+          <label className="wide">
+            Result
+            <input placeholder="Pending, moved forward, rejected, offer" {...register("result")} />
+          </label>
 
-        <div className="form-actions wide">
-          <button className="button" type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Saving..." : editingNote ? "Save changes" : "Add note"}
-          </button>
-          {editingNote && (
+          <div className="form-actions wide">
+            <button className="button" type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Saving..." : editingNote ? "Save changes" : "Add note"}
+            </button>
             <button className="button secondary" type="button" onClick={cancelEditing}>
               Cancel
             </button>
-          )}
-        </div>
-      </form>
+          </div>
+        </form>
+      )}
     </section>
   );
 }
