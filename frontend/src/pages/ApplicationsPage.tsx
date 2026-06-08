@@ -28,6 +28,8 @@ export function ApplicationsPage() {
       .finally(() => setIsLoading(false));
   }, [setApplications]);
 
+//===================filtering applications based on search term and status filter===================
+
   const filteredApplications = useMemo(() => {
     const normalizedSearch = searchTerm.trim().toLowerCase();
 
